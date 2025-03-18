@@ -10,6 +10,8 @@ CREATE TABLE "employee" (
 
 CREATE TABLE "supplier" (
   "id" bigserial PRIMARY KEY,
+  "name" varchar NOT NULL,
+  "company" varchar NOT NULL,
   "password" varchar NOT NULL,
   "created_at" timestamptz DEFAULT 'now()'
 );
@@ -41,6 +43,7 @@ CREATE TABLE "logs" (
 CREATE TABLE "stocklogs" (
   "id" bigserial PRIMARY KEY,
   "from_supplier" bigint NOT NULL,
+  "from_employee" bigint NOT NULL,
   "coffee" bigint NOT NULL,
   "made_at" timestamptz DEFAULT 'now()'
 );
@@ -58,3 +61,5 @@ ALTER TABLE "logs" ADD FOREIGN KEY ("coffee") REFERENCES "coffee" ("id");
 ALTER TABLE "stocklogs" ADD FOREIGN KEY ("from_supplier") REFERENCES "supplier" ("id");
 
 ALTER TABLE "stocklogs" ADD FOREIGN KEY ("coffee") REFERENCES "coffee" ("id");
+
+ALTER TABLE "stocklogs" ADD FOREIGN KEY ("from_employee") REFERENCES "employee" ("id");

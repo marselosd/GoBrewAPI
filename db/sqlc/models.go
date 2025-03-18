@@ -45,12 +45,15 @@ type Machine struct {
 type Stocklog struct {
 	ID           int64        `json:"id"`
 	FromSupplier int64        `json:"from_supplier"`
+	FromEmployee int64        `json:"from_employee"`
 	Coffee       int64        `json:"coffee"`
 	MadeAt       sql.NullTime `json:"made_at"`
 }
 
 type Supplier struct {
 	ID        int64        `json:"id"`
+	Name      string       `json:"name"`
+	Company   string       `json:"company"`
 	Password  string       `json:"password"`
 	CreatedAt sql.NullTime `json:"created_at"`
 }
