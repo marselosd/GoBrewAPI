@@ -9,12 +9,12 @@ import (
 )
 
 type Coffee struct {
-	ID           int64         `json:"id"`
-	Type         string        `json:"type"`
-	Quantity     sql.NullInt32 `json:"quantity"`
-	BuyedAt      sql.NullTime  `json:"buyed_at"`
-	StockedAt    sql.NullTime  `json:"stocked_at"`
-	IsOutstocked bool          `json:"is_outstocked"`
+	ID           int64        `json:"id"`
+	Type         string       `json:"type"`
+	Quantity     int32        `json:"quantity"`
+	BuyedAt      sql.NullTime `json:"buyed_at"`
+	StockedAt    sql.NullTime `json:"stocked_at"`
+	IsOutstocked bool         `json:"is_outstocked"`
 }
 
 type Employee struct {
