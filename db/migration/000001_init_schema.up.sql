@@ -19,9 +19,9 @@ CREATE TABLE "supplier" (
 CREATE TABLE "coffee" (
   "id" bigserial PRIMARY KEY,
   "type" varchar NOT NULL,
-  "quantity" int,
-  "buyed_at" timestamptz,
-  "stocked_at" timestamptz,
+  "quantity" int NOT NULL,
+  "buyed_at" timestamptz DEFAULT 'now()',
+  "stocked_at" timestamptz DEFAULT 'now()',
   "is_outstocked" boolean NOT NULL
 );
 
@@ -30,7 +30,7 @@ CREATE TABLE "machine" (
   "sector" varchar NOT NULL,
   "company" varchar NOT NULL,
   "coffee_id" bigint NOT NULL,
-  "last_restocked_at" timestamptz
+  "last_restocked_at" timestamptz DEFAULT 'now()'
 );
 
 CREATE TABLE "logs" (

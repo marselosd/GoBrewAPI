@@ -19,11 +19,11 @@ INSERT INTO coffee(
 `
 
 type CreateCoffeeParams struct {
-	Type         string        `json:"type"`
-	Quantity     sql.NullInt32 `json:"quantity"`
-	BuyedAt      sql.NullTime  `json:"buyed_at"`
-	StockedAt    sql.NullTime  `json:"stocked_at"`
-	IsOutstocked bool          `json:"is_outstocked"`
+	Type         string       `json:"type"`
+	Quantity     int32        `json:"quantity"`
+	BuyedAt      sql.NullTime `json:"buyed_at"`
+	StockedAt    sql.NullTime `json:"stocked_at"`
+	IsOutstocked bool         `json:"is_outstocked"`
 }
 
 func (q *Queries) CreateCoffee(ctx context.Context, arg CreateCoffeeParams) (Coffee, error) {
@@ -128,11 +128,11 @@ RETURNING id, type, quantity, buyed_at, stocked_at, is_outstocked
 `
 
 type UpdateCoffeeParams struct {
-	ID           int64         `json:"id"`
-	Quantity     sql.NullInt32 `json:"quantity"`
-	BuyedAt      sql.NullTime  `json:"buyed_at"`
-	StockedAt    sql.NullTime  `json:"stocked_at"`
-	IsOutstocked bool          `json:"is_outstocked"`
+	ID           int64        `json:"id"`
+	Quantity     int32        `json:"quantity"`
+	BuyedAt      sql.NullTime `json:"buyed_at"`
+	StockedAt    sql.NullTime `json:"stocked_at"`
+	IsOutstocked bool         `json:"is_outstocked"`
 }
 
 func (q *Queries) UpdateCoffee(ctx context.Context, arg UpdateCoffeeParams) (Coffee, error) {
