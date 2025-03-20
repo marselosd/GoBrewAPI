@@ -105,9 +105,9 @@ func (q *Queries) ListLogs(ctx context.Context, arg ListLogsParams) ([]Log, erro
 const updateLogs = `-- name: UpdateLogs :one
 UPDATE logs
 SET
-    from_employee = CASE WHEN $2 IS NOT NULL THEN $2 ELSE from_employee END,
-    coffee = CASE WHEN $3 IS NOT NULL THEN $3 ELSE coffee END,
-    made_at = CASE WHEN $4 IS NOT NULL THEN $4 ELSE made_at END
+    from_employee = $2,
+    coffee = $3,
+    made_at = $4
 WHERE id = $1
 RETURNING id, from_employee, coffee, made_at
 `

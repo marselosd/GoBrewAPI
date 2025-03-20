@@ -18,12 +18,12 @@ OFFSET $2;
 -- name: UpdateEmployee :one
 UPDATE employee
 SET
-    firstname = CASE WHEN $2 IS NOT NULL THEN $2 ELSE firstname END,
-    lastname = CASE WHEN $3 IS NOT NULL THEN $3 ELSE lastname END,
-    password = CASE WHEN $4 IS NOT NULL THEN $4 ELSE password END,
-    role = CASE WHEN $5 IS NOT NULL THEN $5 ELSE role END,
-    created_at = CASE WHEN $6 IS NOT NULL THEN $6 ELSE created_at END,
-    is_admin = CASE WHEN $7 IS NOT NULL THEN $7 ELSE is_admin END
+    firstname = $2,
+    lastname = $3,
+    password = $4,
+    role = $5,
+    created_at = $6,
+    is_admin = $7
 WHERE id = $1
 RETURNING *;
 

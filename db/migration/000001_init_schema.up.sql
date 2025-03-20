@@ -26,7 +26,7 @@ CREATE TABLE "coffee" (
 );
 
 CREATE TABLE "machine" (
-  "id" integer PRIMARY KEY,
+  "id" bigserial PRIMARY KEY,
   "sector" varchar NOT NULL,
   "company" varchar NOT NULL,
   "coffee_id" bigint NOT NULL,

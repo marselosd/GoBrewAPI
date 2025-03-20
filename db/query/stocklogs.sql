@@ -18,10 +18,10 @@ OFFSET $2;
 -- name: UpdateStockLogs :one
 UPDATE stocklogs
 SET
-    from_supplier = CASE WHEN $2 IS NOT NULL THEN $2 ELSE from_supplier END,
-    from_employee = CASE WHEN $3 IS NOT NULL THEN $3 ELSE from_employee END,
-    coffee = CASE WHEN $4 IS NOT NULL THEN $4 ELSE coffee END,
-    made_at = CASE WHEN $5 IS NOT NULL THEN $5 ELSE made_at END
+    from_supplier = $2,
+    from_employee = $3,
+    coffee = $4,
+    made_at = $5
 WHERE id = $1
 RETURNING *;
 

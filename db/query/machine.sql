@@ -18,10 +18,10 @@ OFFSET $2;
 -- name: UpdateMachine :one
 UPDATE machine
 SET
-    sector = CASE WHEN $2 IS NOT NULL THEN $2 ELSE sector END,
-    company = CASE WHEN $3 IS NOT NULL THEN $3 ELSE company END,
-    coffee_id = CASE WHEN $4 IS NOT NULL THEN $4 ELSE coffee_id END,
-    last_restocked_at = CASE WHEN $5 IS NOT NULL THEN $5 ELSE last_restocked_at END
+    sector = $2,
+    company = $3,
+    coffee_id = $4,
+    last_restocked_at = $5
 WHERE id = $1
 RETURNING *;
 
