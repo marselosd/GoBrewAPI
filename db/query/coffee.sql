@@ -15,9 +15,14 @@ ORDER BY id
 LIMIT $1
 OFFSET $2;
 
--- name: UpdateQuantityCoffee :one
+-- name: UpdateCoffee :one
 UPDATE coffee
-SET quantity = $2
+SET 
+type = $2,
+quantity = $3,
+buyed_at = $4,
+stocked_at = $5,
+is_outstocked = $6
 WHERE id = $1
 RETURNING *;
 

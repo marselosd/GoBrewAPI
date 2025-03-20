@@ -63,19 +63,23 @@ func TestGetCoffee(t *testing.T) {
 func TestUpdateCoffee(t *testing.T) {
 	coffee := createRandomCoffee(t)
 
-	arg := UpdateQuantityCoffeeParams{
+	arg := UpdateCoffeeParams{
 		ID: coffee.ID,
+		Type: coffee.Type,
 		Quantity: int32(util.RandomInt(1,30)),
+		BuyedAt: coffee.BuyedAt,
+		StockedAt: util.RandomDate(),
+		IsOutstocked: false,
 	}
 
-	coffeeQ, err := testQueries.UpdateQuantityCoffee(context.Background(), arg)
+	coffeeQ, err := testQueries.UpdateCoffee(context.Background(), arg)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, coffeeQ)
 	require.Equal(t, arg.Quantity, coffeeQ.Quantity)
-	require.Equal(t, coffee.BuyedAt.Time.In(time.UTC), coffeeQ.BuyedAt.Time.In(time.UTC))
-	require.Equal(t, coffee.StockedAt.Time.In(time.UTC), coffeeQ.StockedAt.Time.In(time.UTC))
-	require.Equal(t, coffee.IsOutstocked, coffeeQ.IsOutstocked)
+	require.Equal(t, arg.BuyedAt.Time.In(time.UTC), coffeeQ.BuyedAt.Time.In(time.UTC))
+	require.Equal(t, arg.StockedAt.Time.In(time.UTC), coffeeQ.StockedAt.Time.In(time.UTC))
+	require.Equal(t, arg.IsOutstocked, coffeeQ.IsOutstocked)
 
 	deleteIDCoffee(coffee)
 }

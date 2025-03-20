@@ -18,10 +18,10 @@ OFFSET $2;
 -- name: UpdateSupplier :one
 UPDATE supplier
 SET
-    name = CASE WHEN $2 IS NOT NULL THEN $2 ELSE name END,
-    company = CASE WHEN $3 IS NOT NULL THEN $3 ELSE company END,
-    password = CASE WHEN $4 IS NOT NULL THEN $4 ELSE password END,
-    created_at = CASE WHEN $5 IS NOT NULL THEN $5 ELSE created_at END
+    name = $2,
+    company = $3,
+    password = $4,
+    created_at = $5
 WHERE id = $1
 RETURNING *;
 
