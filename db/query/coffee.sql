@@ -15,13 +15,9 @@ ORDER BY id
 LIMIT $1
 OFFSET $2;
 
--- name: UpdateCoffee :one
+-- name: UpdateQuantityCoffee :one
 UPDATE coffee
-SET
-    quantity = CASE WHEN $2 IS NOT NULL THEN $2 ELSE quantity END,
-    buyed_at = CASE WHEN $3 IS NOT NULL THEN $3 ELSE buyed_at END,
-    stocked_at = CASE WHEN $4 IS NOT NULL THEN $4 ELSE stocked_at END,
-    is_outstocked = CASE WHEN $5 IS NOT NULL THEN $5 ELSE is_outstocked END
+SET quantity = $2
 WHERE id = $1
 RETURNING *;
 

@@ -116,33 +116,20 @@ func (q *Queries) ListCoffee(ctx context.Context, arg ListCoffeeParams) ([]Coffe
 	return items, nil
 }
 
-const updateCoffee = `-- name: UpdateCoffee :one
+const updateQuantityCoffee = `-- name: UpdateQuantityCoffee :one
 UPDATE coffee
-SET
-    quantity = CASE WHEN $2 IS NOT NULL THEN $2 ELSE quantity END,
-    buyed_at = CASE WHEN $3 IS NOT NULL THEN $3 ELSE buyed_at END,
-    stocked_at = CASE WHEN $4 IS NOT NULL THEN $4 ELSE stocked_at END,
-    is_outstocked = CASE WHEN $5 IS NOT NULL THEN $5 ELSE is_outstocked END
+SET quantity = $2
 WHERE id = $1
 RETURNING id, type, quantity, buyed_at, stocked_at, is_outstocked
 `
 
-type UpdateCoffeeParams struct {
-	ID           int64        `json:"id"`
-	Quantity     int32        `json:"quantity"`
-	BuyedAt      sql.NullTime `json:"buyed_at"`
-	StockedAt    sql.NullTime `json:"stocked_at"`
-	IsOutstocked bool         `json:"is_outstocked"`
+type UpdateQuantityCoffeeParams struct {
+	ID       int64 `json:"id"`
+	Quantity int32 `json:"quantity"`
 }
 
-func (q *Queries) UpdateCoffee(ctx context.Context, arg UpdateCoffeeParams) (Coffee, error) {
-	row := q.db.QueryRowContext(ctx, updateCoffee,
-		arg.ID,
-		arg.Quantity,
-		arg.BuyedAt,
-		arg.StockedAt,
-		arg.IsOutstocked,
-	)
+func (q *Queries) UpdateQuantityCoffee(ctx context.Context, arg UpdateQuantityCoffeeParams) (Coffee, error) {
+	row := q.db.QueryRowContext(ctx, updateQuantityCoffee, arg.ID, arg.Quantity)
 	var i Coffee
 	err := row.Scan(
 		&i.ID,
