@@ -13,7 +13,10 @@ import (
 func createRandomCoffee(t *testing.T) Coffee{
 	arg := CreateCoffeeParams{
 		Type: util.RandomCoffee(),
-		Quantity: int32(util.RandomInt(1,10)),
+		Quantity: sql.NullInt32{
+			Int32: int32(util.RandomInt(1,10)),
+			Valid: true,
+		},
 		BuyedAt: util.RandomDate(),
 		StockedAt: util.RandomDate(),
 		IsOutstocked: false,
@@ -66,7 +69,10 @@ func TestUpdateCoffee(t *testing.T) {
 	arg := UpdateCoffeeParams{
 		ID: coffee.ID,
 		Type: coffee.Type,
-		Quantity: int32(util.RandomInt(1,30)),
+		Quantity: sql.NullInt32{
+			Int32: int32(util.RandomInt(1,10)),
+			Valid: true,
+		},
 		BuyedAt: coffee.BuyedAt,
 		StockedAt: util.RandomDate(),
 		IsOutstocked: false,

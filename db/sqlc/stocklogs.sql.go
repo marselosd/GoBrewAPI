@@ -12,16 +12,17 @@ import (
 
 const createStockLogs = `-- name: CreateStockLogs :one
 INSERT INTO stocklogs(
-    "from_supplier", "from_employee", "coffee", "made_at"
+    "from_supplier", "from_employee", "coffee", "quantity", "made_at"
 ) VALUES (
-    $1, $2, $3, $4
-) RETURNING id, from_supplier, from_employee, coffee, made_at
+    $1, $2, $3, $4, $5
+) RETURNING id, from_supplier, from_employee, coffee, quantity, made_at
 `
 
 type CreateStockLogsParams struct {
 	FromSupplier int64        `json:"from_supplier"`
 	FromEmployee int64        `json:"from_employee"`
 	Coffee       int64        `json:"coffee"`
+	Quantity     int32        `json:"quantity"`
 	MadeAt       sql.NullTime `json:"made_at"`
 }
 
@@ -30,6 +31,7 @@ func (q *Queries) CreateStockLogs(ctx context.Context, arg CreateStockLogsParams
 		arg.FromSupplier,
 		arg.FromEmployee,
 		arg.Coffee,
+		arg.Quantity,
 		arg.MadeAt,
 	)
 	var i Stocklog
@@ -38,6 +40,7 @@ func (q *Queries) CreateStockLogs(ctx context.Context, arg CreateStockLogsParams
 		&i.FromSupplier,
 		&i.FromEmployee,
 		&i.Coffee,
+		&i.Quantity,
 		&i.MadeAt,
 	)
 	return i, err
@@ -53,7 +56,7 @@ func (q *Queries) DeleteStockLogs(ctx context.Context, id int64) error {
 }
 
 const getStockLogs = `-- name: GetStockLogs :one
-SELECT id, from_supplier, from_employee, coffee, made_at FROM stocklogs
+SELECT id, from_supplier, from_employee, coffee, quantity, made_at FROM stocklogs
 WHERE id = $1 LIMIT 1
 `
 
@@ -65,13 +68,14 @@ func (q *Queries) GetStockLogs(ctx context.Context, id int64) (Stocklog, error) 
 		&i.FromSupplier,
 		&i.FromEmployee,
 		&i.Coffee,
+		&i.Quantity,
 		&i.MadeAt,
 	)
 	return i, err
 }
 
 const listStockLogs = `-- name: ListStockLogs :many
-SELECT id, from_supplier, from_employee, coffee, made_at FROM stocklogs
+SELECT id, from_supplier, from_employee, coffee, quantity, made_at FROM stocklogs
 ORDER BY id
 LIMIT $1
 OFFSET $2
@@ -96,6 +100,7 @@ func (q *Queries) ListStockLogs(ctx context.Context, arg ListStockLogsParams) ([
 			&i.FromSupplier,
 			&i.FromEmployee,
 			&i.Coffee,
+			&i.Quantity,
 			&i.MadeAt,
 		); err != nil {
 			return nil, err
@@ -117,9 +122,10 @@ SET
     from_supplier = $2,
     from_employee = $3,
     coffee = $4,
-    made_at = $5
+    quantity = $5,
+    made_at = $6
 WHERE id = $1
-RETURNING id, from_supplier, from_employee, coffee, made_at
+RETURNING id, from_supplier, from_employee, coffee, quantity, made_at
 `
 
 type UpdateStockLogsParams struct {
@@ -127,6 +133,7 @@ type UpdateStockLogsParams struct {
 	FromSupplier int64        `json:"from_supplier"`
 	FromEmployee int64        `json:"from_employee"`
 	Coffee       int64        `json:"coffee"`
+	Quantity     int32        `json:"quantity"`
 	MadeAt       sql.NullTime `json:"made_at"`
 }
 
@@ -136,6 +143,7 @@ func (q *Queries) UpdateStockLogs(ctx context.Context, arg UpdateStockLogsParams
 		arg.FromSupplier,
 		arg.FromEmployee,
 		arg.Coffee,
+		arg.Quantity,
 		arg.MadeAt,
 	)
 	var i Stocklog
@@ -144,6 +152,7 @@ func (q *Queries) UpdateStockLogs(ctx context.Context, arg UpdateStockLogsParams
 		&i.FromSupplier,
 		&i.FromEmployee,
 		&i.Coffee,
+		&i.Quantity,
 		&i.MadeAt,
 	)
 	return i, err

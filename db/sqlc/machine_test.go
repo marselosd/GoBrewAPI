@@ -17,6 +17,10 @@ func createRandomMachine(t *testing.T) Machine {
 		Sector:          "Main",
 		Company:         "Kaisha",
 		CoffeeID:        coffee.ID,
+		Quantity:        sql.NullInt32{
+			Int32: 1,
+			Valid: true,
+		},
 		LastRestockedAt: util.RandomDate(),
 	}
 
@@ -60,6 +64,7 @@ func TestGetMachine(t *testing.T) {
 	require.Equal(t, machineQ.Sector, machine.Sector)
 	require.Equal(t, machineQ.Company, machine.Company)
 	require.Equal(t, machineQ.CoffeeID, machine.CoffeeID)
+	require.Equal(t, machineQ.Quantity, machine.Quantity)
 	require.Equal(t, machineQ.LastRestockedAt.Time.In(time.UTC), machine.LastRestockedAt.Time.In(time.UTC))
 
 	deleteIDCoffee(func() Coffee {
