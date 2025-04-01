@@ -10,19 +10,46 @@ import (
 	"database/sql"
 )
 
+const addQuantity = `-- name: AddQuantity :one
+UPDATE machine
+SET quantity = quantity + $1
+WHERE id = $2
+RETURNING id, sector, company, coffee_id, quantity, last_restocked_at
+`
+
+type AddQuantityParams struct {
+	Amount sql.NullInt32 `json:"amount"`
+	ID     int64         `json:"id"`
+}
+
+func (q *Queries) AddQuantity(ctx context.Context, arg AddQuantityParams) (Machine, error) {
+	row := q.db.QueryRowContext(ctx, addQuantity, arg.Amount, arg.ID)
+	var i Machine
+	err := row.Scan(
+		&i.ID,
+		&i.Sector,
+		&i.Company,
+		&i.CoffeeID,
+		&i.Quantity,
+		&i.LastRestockedAt,
+	)
+	return i, err
+}
+
 const createMachine = `-- name: CreateMachine :one
 INSERT INTO machine(
-    "sector", "company", "coffee_id", "last_restocked_at"
+    "sector", "company", "coffee_id", "quantity", "last_restocked_at"
 ) VALUES (
-    $1, $2, $3, $4
-) RETURNING id, sector, company, coffee_id, last_restocked_at
+    $1, $2, $3, $4, $5
+) RETURNING id, sector, company, coffee_id, quantity, last_restocked_at
 `
 
 type CreateMachineParams struct {
-	Sector          string       `json:"sector"`
-	Company         string       `json:"company"`
-	CoffeeID        int64        `json:"coffee_id"`
-	LastRestockedAt sql.NullTime `json:"last_restocked_at"`
+	Sector          string        `json:"sector"`
+	Company         string        `json:"company"`
+	CoffeeID        int64         `json:"coffee_id"`
+	Quantity        sql.NullInt32 `json:"quantity"`
+	LastRestockedAt sql.NullTime  `json:"last_restocked_at"`
 }
 
 func (q *Queries) CreateMachine(ctx context.Context, arg CreateMachineParams) (Machine, error) {
@@ -30,6 +57,7 @@ func (q *Queries) CreateMachine(ctx context.Context, arg CreateMachineParams) (M
 		arg.Sector,
 		arg.Company,
 		arg.CoffeeID,
+		arg.Quantity,
 		arg.LastRestockedAt,
 	)
 	var i Machine
@@ -38,6 +66,7 @@ func (q *Queries) CreateMachine(ctx context.Context, arg CreateMachineParams) (M
 		&i.Sector,
 		&i.Company,
 		&i.CoffeeID,
+		&i.Quantity,
 		&i.LastRestockedAt,
 	)
 	return i, err
@@ -47,17 +76,17 @@ const deleteMachine = `-- name: DeleteMachine :exec
 DELETE FROM machine WHERE id = $1
 `
 
-func (q *Queries) DeleteMachine(ctx context.Context, id int32) error {
+func (q *Queries) DeleteMachine(ctx context.Context, id int64) error {
 	_, err := q.db.ExecContext(ctx, deleteMachine, id)
 	return err
 }
 
 const getMachine = `-- name: GetMachine :one
-SELECT id, sector, company, coffee_id, last_restocked_at FROM machine
+SELECT id, sector, company, coffee_id, quantity, last_restocked_at FROM machine
 WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetMachine(ctx context.Context, id int32) (Machine, error) {
+func (q *Queries) GetMachine(ctx context.Context, id int64) (Machine, error) {
 	row := q.db.QueryRowContext(ctx, getMachine, id)
 	var i Machine
 	err := row.Scan(
@@ -65,13 +94,34 @@ func (q *Queries) GetMachine(ctx context.Context, id int32) (Machine, error) {
 		&i.Sector,
 		&i.Company,
 		&i.CoffeeID,
+		&i.Quantity,
+		&i.LastRestockedAt,
+	)
+	return i, err
+}
+
+const getMachineForUpdate = `-- name: GetMachineForUpdate :one
+SELECT id, sector, company, coffee_id, quantity, last_restocked_at FROM machine
+WHERE id = $1 LIMIT 1
+FOR NO KEY UPDATE
+`
+
+func (q *Queries) GetMachineForUpdate(ctx context.Context, id int64) (Machine, error) {
+	row := q.db.QueryRowContext(ctx, getMachineForUpdate, id)
+	var i Machine
+	err := row.Scan(
+		&i.ID,
+		&i.Sector,
+		&i.Company,
+		&i.CoffeeID,
+		&i.Quantity,
 		&i.LastRestockedAt,
 	)
 	return i, err
 }
 
 const listMachine = `-- name: ListMachine :many
-SELECT id, sector, company, coffee_id, last_restocked_at FROM machine
+SELECT id, sector, company, coffee_id, quantity, last_restocked_at FROM machine
 ORDER BY id
 LIMIT $1
 OFFSET $2
@@ -96,6 +146,7 @@ func (q *Queries) ListMachine(ctx context.Context, arg ListMachineParams) ([]Mac
 			&i.Sector,
 			&i.Company,
 			&i.CoffeeID,
+			&i.Quantity,
 			&i.LastRestockedAt,
 		); err != nil {
 			return nil, err
@@ -117,17 +168,19 @@ SET
     sector = $2,
     company = $3,
     coffee_id = $4,
-    last_restocked_at = $5
+    quantity = $5,
+    last_restocked_at = $6
 WHERE id = $1
-RETURNING id, sector, company, coffee_id, last_restocked_at
+RETURNING id, sector, company, coffee_id, quantity, last_restocked_at
 `
 
 type UpdateMachineParams struct {
-	ID              int32        `json:"id"`
-	Sector          string       `json:"sector"`
-	Company         string       `json:"company"`
-	CoffeeID        int64        `json:"coffee_id"`
-	LastRestockedAt sql.NullTime `json:"last_restocked_at"`
+	ID              int64         `json:"id"`
+	Sector          string        `json:"sector"`
+	Company         string        `json:"company"`
+	CoffeeID        int64         `json:"coffee_id"`
+	Quantity        sql.NullInt32 `json:"quantity"`
+	LastRestockedAt sql.NullTime  `json:"last_restocked_at"`
 }
 
 func (q *Queries) UpdateMachine(ctx context.Context, arg UpdateMachineParams) (Machine, error) {
@@ -136,6 +189,7 @@ func (q *Queries) UpdateMachine(ctx context.Context, arg UpdateMachineParams) (M
 		arg.Sector,
 		arg.Company,
 		arg.CoffeeID,
+		arg.Quantity,
 		arg.LastRestockedAt,
 	)
 	var i Machine
@@ -144,6 +198,33 @@ func (q *Queries) UpdateMachine(ctx context.Context, arg UpdateMachineParams) (M
 		&i.Sector,
 		&i.Company,
 		&i.CoffeeID,
+		&i.Quantity,
+		&i.LastRestockedAt,
+	)
+	return i, err
+}
+
+const updateMachineQuantity = `-- name: UpdateMachineQuantity :one
+UPDATE machine
+SET quantity = $2
+WHERE id = $1
+RETURNING id, sector, company, coffee_id, quantity, last_restocked_at
+`
+
+type UpdateMachineQuantityParams struct {
+	ID       int64         `json:"id"`
+	Quantity sql.NullInt32 `json:"quantity"`
+}
+
+func (q *Queries) UpdateMachineQuantity(ctx context.Context, arg UpdateMachineQuantityParams) (Machine, error) {
+	row := q.db.QueryRowContext(ctx, updateMachineQuantity, arg.ID, arg.Quantity)
+	var i Machine
+	err := row.Scan(
+		&i.ID,
+		&i.Sector,
+		&i.Company,
+		&i.CoffeeID,
+		&i.Quantity,
 		&i.LastRestockedAt,
 	)
 	return i, err

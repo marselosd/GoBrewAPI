@@ -1,8 +1,8 @@
 -- name: CreateStockLogs :one
 INSERT INTO stocklogs(
-    "from_supplier", "from_employee", "coffee", "made_at"
+    "from_supplier", "from_employee", "coffee", "quantity", "made_at"
 ) VALUES (
-    $1, $2, $3, $4
+    $1, $2, $3, $4, $5
 ) RETURNING *;
 
 -- name: GetStockLogs :one
@@ -21,7 +21,8 @@ SET
     from_supplier = $2,
     from_employee = $3,
     coffee = $4,
-    made_at = $5
+    quantity = $5,
+    made_at = $6
 WHERE id = $1
 RETURNING *;
 

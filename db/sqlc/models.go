@@ -9,12 +9,12 @@ import (
 )
 
 type Coffee struct {
-	ID           int64        `json:"id"`
-	Type         string       `json:"type"`
-	Quantity     int32        `json:"quantity"`
-	BuyedAt      sql.NullTime `json:"buyed_at"`
-	StockedAt    sql.NullTime `json:"stocked_at"`
-	IsOutstocked bool         `json:"is_outstocked"`
+	ID           int64         `json:"id"`
+	Type         string        `json:"type"`
+	Quantity     sql.NullInt32 `json:"quantity"`
+	BuyedAt      sql.NullTime  `json:"buyed_at"`
+	StockedAt    sql.NullTime  `json:"stocked_at"`
+	IsOutstocked bool          `json:"is_outstocked"`
 }
 
 type Employee struct {
@@ -35,11 +35,21 @@ type Log struct {
 }
 
 type Machine struct {
-	ID              int32        `json:"id"`
-	Sector          string       `json:"sector"`
-	Company         string       `json:"company"`
-	CoffeeID        int64        `json:"coffee_id"`
-	LastRestockedAt sql.NullTime `json:"last_restocked_at"`
+	ID              int64         `json:"id"`
+	Sector          string        `json:"sector"`
+	Company         string        `json:"company"`
+	CoffeeID        int64         `json:"coffee_id"`
+	Quantity        sql.NullInt32 `json:"quantity"`
+	LastRestockedAt sql.NullTime  `json:"last_restocked_at"`
+}
+
+type Machinelog struct {
+	ID           int64        `json:"id"`
+	FromEmployee int64        `json:"from_employee"`
+	ToMachine    int64        `json:"to_machine"`
+	Coffee       int64        `json:"coffee"`
+	Quantity     int32        `json:"quantity"`
+	MadeAt       sql.NullTime `json:"made_at"`
 }
 
 type Stocklog struct {
@@ -47,6 +57,7 @@ type Stocklog struct {
 	FromSupplier int64        `json:"from_supplier"`
 	FromEmployee int64        `json:"from_employee"`
 	Coffee       int64        `json:"coffee"`
+	Quantity     int32        `json:"quantity"`
 	MadeAt       sql.NullTime `json:"made_at"`
 }
 

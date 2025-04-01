@@ -19,7 +19,7 @@ CREATE TABLE "supplier" (
 CREATE TABLE "coffee" (
   "id" bigserial PRIMARY KEY,
   "type" varchar NOT NULL,
-  "quantity" int NOT NULL,
+  "quantity" int,
   "buyed_at" timestamptz DEFAULT 'now()',
   "stocked_at" timestamptz DEFAULT 'now()',
   "is_outstocked" boolean NOT NULL
@@ -30,6 +30,7 @@ CREATE TABLE "machine" (
   "sector" varchar NOT NULL,
   "company" varchar NOT NULL,
   "coffee_id" bigint NOT NULL,
+  "quantity" int,
   "last_restocked_at" timestamptz DEFAULT 'now()'
 );
 
@@ -45,6 +46,16 @@ CREATE TABLE "stocklogs" (
   "from_supplier" bigint NOT NULL,
   "from_employee" bigint NOT NULL,
   "coffee" bigint NOT NULL,
+  "quantity" int NOT NULL,
+  "made_at" timestamptz DEFAULT 'now()'
+);
+
+CREATE TABLE "machinelogs" (
+  "id" bigserial PRIMARY KEY,
+  "from_employee" bigint NOT NULL,
+  "to_machine" bigint NOT NULL,
+  "coffee" bigint NOT NULL,
+  "quantity" int NOT NULL,
   "made_at" timestamptz DEFAULT 'now()'
 );
 
@@ -63,3 +74,9 @@ ALTER TABLE "stocklogs" ADD FOREIGN KEY ("from_supplier") REFERENCES "supplier" 
 ALTER TABLE "stocklogs" ADD FOREIGN KEY ("coffee") REFERENCES "coffee" ("id");
 
 ALTER TABLE "stocklogs" ADD FOREIGN KEY ("from_employee") REFERENCES "employee" ("id");
+
+ALTER TABLE "machinelogs" ADD FOREIGN KEY ("coffee") REFERENCES "coffee" ("id");
+
+ALTER TABLE "machinelogs" ADD FOREIGN KEY ("from_employee") REFERENCES "employee" ("id");
+
+ALTER TABLE "machinelogs" ADD FOREIGN KEY ("to_machine") REFERENCES "machine" ("id");
