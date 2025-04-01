@@ -8,10 +8,10 @@ dropdb:
 	docker exec -it gobrew1 dropdb go_brew
 
 migrateup:
-	migrate -path db/migration -database "postgresql://root:secretpwd@localhost:5432/go_brew?sslmode=disable" -verbose up
+	migrate -path db/migration -database postgresql://root:secretpwd@localhost:5432/go_brew?sslmode=disable -verbose up
 
 migratedown:
-	migrate -path db/migration -database "postgresql://root:secretpwd@localhost:5432/go_brew?sslmode=disable" -verbose down
+	migrate -path db/migration -database postgresql://root:secretpwd@localhost:5432/go_brew?sslmode=disable -verbose down
 
 sqlc:
 	sqlc generate 
