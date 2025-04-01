@@ -19,6 +19,7 @@ func createRandomStocklog(t *testing.T) Stocklog {
 		FromSupplier: supplier.ID,
 		FromEmployee: employee.ID,
 		Coffee:       coffee.ID,
+		Quantity:	  int32(util.RandomInt(1,20)),
 		MadeAt:       util.RandomDate(),
 	}
 
@@ -29,6 +30,7 @@ func createRandomStocklog(t *testing.T) Stocklog {
 	require.Equal(t, arg.FromSupplier, stocklog.FromSupplier)
 	require.Equal(t, arg.FromEmployee, stocklog.FromEmployee)
 	require.Equal(t, arg.Coffee, stocklog.Coffee)
+	require.Equal(t, arg.Quantity, stocklog.Quantity)
 	require.Equal(t, arg.MadeAt.Time.In(time.UTC), stocklog.MadeAt.Time.In(time.UTC))
 
 	require.NotZero(t, stocklog.ID)
@@ -74,6 +76,7 @@ func TestGetStocklog(t *testing.T) {
 	require.Equal(t, stocklogQ.FromSupplier, stocklog.FromSupplier)
 	require.Equal(t, stocklogQ.FromEmployee, stocklog.FromEmployee)
 	require.Equal(t, stocklogQ.Coffee, stocklog.Coffee)
+	require.Equal(t, stocklogQ.Quantity, stocklog.Quantity)
 	require.Equal(t, stocklogQ.MadeAt.Time.In(time.UTC), stocklog.MadeAt.Time.In(time.UTC))
 
 	deleteIDSupplier(func() Supplier {
@@ -120,6 +123,7 @@ func TestUpdateStocklog(t *testing.T) {
 		FromSupplier: stocklog.FromSupplier,
 		FromEmployee: employee.ID,
 		Coffee:       coffee.ID,
+		Quantity:	  int32(util.RandomInt(1,20)),
 		MadeAt:       util.RandomDate(),
 	}
 
@@ -130,6 +134,7 @@ func TestUpdateStocklog(t *testing.T) {
 	require.Equal(t, stocklogQ.FromSupplier, arg.FromSupplier)
 	require.Equal(t, stocklogQ.FromEmployee, arg.FromEmployee)
 	require.Equal(t, stocklogQ.Coffee, arg.Coffee)
+	require.Equal(t, stocklogQ.Quantity, arg.Quantity)
 	require.Equal(t, stocklogQ.MadeAt.Time.In(time.UTC), arg.MadeAt.Time.In(time.UTC))
 
 	deleteIDSupplier(func() Supplier {
